@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  frontend:
+    container_name: family_frontend
+    build: .
+    ports:
+      - '4005:80'
+
+networks:
+  default:
+    name: midas
+    external: true
