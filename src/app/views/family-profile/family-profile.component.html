@@ -47,9 +47,12 @@
       <ng-container matColumnDef="icons">
         <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
         <td mat-cell *matCellDef="let item">
-          <div *ngIf="!isLoggedUser(item.user.email) && isUserFamilyAdmin" class="icons-flex">
-            <button (click)="deleteUserFromFamily(item.user.email)" mat-icon-button aria-label="Delete">
+          <div *ngIf="!isLoggedUser(item.user.email)" class="icons-flex">
+            <button *ngIf="isUserFamilyAdmin" (click)="deleteUserFromFamily(item.user.email)" mat-icon-button aria-label="Delete">
               <mat-icon>delete</mat-icon>
+            </button>
+            <button *ngIf="isUserFamilyParent || isUserFamilyAdmin" (click)="goToTransactions(item.user.id)" mat-icon-button aria-label="Transactions">
+              <mat-icon>receipt_long</mat-icon>
             </button>
           </div>
         </td>

@@ -24,8 +24,7 @@ export class FamilyProfileComponent implements OnInit {
   familyId: number;
   displayedColumns: string[] = ['firstName', 'lastName', 'email', 'role', 'icons'];
   familyName: string = '';
-  userEmail: string = ';'
-  isUserFamilyAdmin: boolean = false;
+  userEmail: string = ''
 
   constructor(
     private familyApi: FamilyApiService,
@@ -55,10 +54,16 @@ export class FamilyProfileComponent implements OnInit {
     return email === this.userEmail;
   }
 
-  private setIsUserFamilyAdmin(): void {
+  get isUserFamilyAdmin(): boolean {
     const MAIN_ADMIN_ROLE_ID = 1;
-    this.isUserFamilyAdmin = this.familyMembers.some(x => x.user?.email === this.userEmail && x.familyRole?.id === MAIN_ADMIN_ROLE_ID);
+    return this.familyMembers?.some(x => x.user?.email === this.userEmail && x.familyRole?.id === MAIN_ADMIN_ROLE_ID) ?? false;
   }
+
+  get isUserFamilyParent(): boolean {
+    const PARENT_ROLE_ID = 2;
+    return this.familyMembers?.some(x => x.user?.email === this.userEmail && x.familyRole?.id === PARENT_ROLE_ID) ?? false;
+  }
+
 
   private getFamily(): void {
     this.familyApi.getFamilyMembers(this.familyId)
@@ -67,7 +72,6 @@ export class FamilyProfileComponent implements OnInit {
           this.familyMembers = response.result.items!;
           this.familyName = this.familyMembers[0].family!.name!;
           this.state = ComponentState.LOADED;
-          this.setIsUserFamilyAdmin();
         },
         error: error => {
           console.error(error);
@@ -109,6 +113,10 @@ export class FamilyProfileComponent implements OnInit {
           this.state = ComponentState.ERROR;
         },
       })
+  }
+
+  goToTransactions(id: number): void {
+    this.router.navigate(['transactions', 'list', id]);
   }
 
   setUserFamilyRole(roleId: number, email: string): void {
